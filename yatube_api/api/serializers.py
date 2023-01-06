@@ -25,26 +25,27 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
-    user = SlugRelatedField(slug_field='username', read_only=True,)
+    user = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True,
+        default=serializers.CurrentUserDefault())
     following = serializers.SlugRelatedField(
         slug_field='username',
         queryset=User.objects.all())
 
-    class Meta:
-        fields = '__all__'
-        model = Follow
-        validators = (
-            UniqueTogetherValidator(
-                queryset=Follow.objects.all(),
-                fields=('user', 'following',),
-                message='Подписка на автора существует'), )
+    def validate(self, data):
+        if self.context['request'].user == data['following']:
+            raise serializers.ValidationError("Нельзя подписаться на себя.")
+        return data
 
-        def validate(self, data):
-            if self.context['request'].user == data['following']:
-                raise serializers.ValidationError(
-                    'Нельзя подписаться на самого себя'
-                )
-            return data
+    class Meta:
+        model = Follow
+        fields = '__all__'
+        validators = [
+            UniqueTogetherValidator(
+                Follow.objects.all(),
+                ['user', 'following'])
+        ]
 
 
 class GroupSerializer(serializers.ModelSerializer):

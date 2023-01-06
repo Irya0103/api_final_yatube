@@ -9,7 +9,7 @@ v1_router = DefaultRouter()
 v1_router.register('posts', PostViewSet, basename='posts')
 v1_router.register('users', UserViewSet, basename='users')
 v1_router.register('groups', GroupViewSet, basename='groups')
-v1_router.register('follow', FollowViewSet, basename='follow')
+v1_router.register('follow', FollowViewSet, basename='followers')
 v1_router.register(
     'posts/(?P<post_id>\\d+)/comments',
     CommentViewSet,
@@ -18,4 +18,5 @@ v1_router.register(
 urlpatterns = [
     path('v1/', include(v1_router.urls)),
     path('v1/', include('djoser.urls.jwt')),
+    path('v1/', include('djoser.urls')),
 ]
