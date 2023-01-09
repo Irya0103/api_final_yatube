@@ -38,6 +38,9 @@ class Comment(models.Model):
     created = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True)
 
+    class Meta:
+        default_related_name = 'comments'
+
 
 class Follow(models.Model):
     user = models.ForeignKey(
@@ -48,6 +51,7 @@ class Follow(models.Model):
     )
 
     class Meta:
+        
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'following'),
