@@ -49,6 +49,5 @@ class FollowViewSet(viewsets.GenericViewSet,
     def get_queryset(self):
         return self.request.user.follower
 
-
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
